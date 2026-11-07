@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRO NOTEPAD · sleek & simple</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #1a1e24 0%, #0e1217 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* main card – glass / professional */
+    .notepad-container {
+      width: 900px;
+      max-width: 100%;
+      background: rgba(22, 27, 34, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 28px 28px 32px;
+      transition: all 0.2s ease;
+    }
+
+    /* header area */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding: 0 4px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+      color: #e9edf2;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header h1 span {
+      background: #4c7ef3;
+      color: #0b0f14;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 40px;
+      letter-spacing: 0.2px;
+      background: linear-gradient(135deg, #8ab0ff, #5b8cff);
+      color: #0a0e13;
+      box-shadow: 0 2px 6px rgba(80, 130, 255, 0.3);
+    }
+
+    /* toolbar */
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(30, 37, 46, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 18px;
+      border-radius: 60px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      letter-spacing: 0.2px;
+      backdrop-filter: blur(4px);
+    }
+
+    .btn i {
+      font-style: normal;
+      font-size: 16px;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
+    }
+
+    .btn:hover {
+      background: #2b3542;
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #f0f4fa;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3e6ae1, #2f55c4);
+      border-color: rgba(120, 160, 255, 0.5);
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 6px 14px rgba(47, 85, 196, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4b76f0, #3862d9);
+      box-shadow: 0 8px 18px rgba(47, 85, 196, 0.5);
+      color: white;
+    }
+
+    .btn-danger {
+      background: rgba(70, 35, 40, 0.8);
+      border-color: rgba(200, 80, 80, 0.4);
+      color: #ffb3b3;
+    }
+
+    .btn-danger:hover {
+      background: rgba(110, 45, 50, 0.9);
+      border-color: #e05a5a;
+      color: #ffd6d6;
+    }
+
+    .char-counter {
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 400;
+      color: #7b8b9f;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 6px 14px;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      letter-spacing: 0.3px;
+      backdrop-filter: blur(4px);
+      white-space: nowrap;
+    }
+
+    /* textarea wrapper – for subtle glow */
+    .editor-wrapper {
+      position: relative;
+      margin-top: 6px;
+      border-radius: 24px;
+      background: rgba(10, 14, 19, 0.7);
+      padding: 2px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03);
+      transition: box-shadow 0.2s;
+    }
+
+    .editor-wrapper:focus-within {
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(90, 140, 255, 0.5);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 460px;
+      background: #0d1219;
+      border: none;
+      border-radius: 22px;
+      padding: 24px 24px;
+      font-family: 'SF Mono', 'Fira Code', 'Menlo', 'Cascadia Code', monospace;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #e2eaf5;
+      resize: vertical;
+      outline: none;
+      letter-spacing: 0.2px;
+      caret-color: #6c9eff;
+      transition: background 0.15s;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.5);
+      scrollbar-width: thin;
+      scrollbar-color: #2e3c4e #0d1219;
+    }
+
+    textarea::placeholder {
+      color: #4b5c70;
+      font-style: italic;
+      font-weight: 300;
+      letter-spacing: 0.3px;
+    }
+
+    textarea::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    textarea::-webkit-scrollbar-track {
+      background: #0d1219;
+      border-radius: 10px;
+    }
+
+    textarea::-webkit-scrollbar-thumb {
+      background: #2e3c4e;
+      border-radius: 10px;
+      border: 1px solid #1a212b;
+    }
+
+    textarea::-webkit-scrollbar-thumb:hover {
+      background: #3e5065;
+    }
+
+    /* footer subtle */
+    .footer-note {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      font-size: 12px;
+      color: #5f7188;
+      letter-spacing: 0.2px;
+      padding: 0 6px;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #50c878;
+      box-shadow: 0 0 8px #50c87880;
+      margin-right: 6px;
+      transition: background 0.2s;
+    }
+
+    /* responsive */
+    @media (max-width: 600px) {
+      .notepad-container {
+        padding: 18px 18px 24px;
+        border-radius: 24px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .toolbar {
+        width: 100%;
+        gap: 8px;
+      }
+
+      .btn {
+        padding: 8px 14px;
+        font-size: 13px;
+      }
+
+      .char-counter {
+        margin-left: 0;
+        font-size: 12px;
+      }
+
+      textarea {
+        min-height: 320px;
+        padding: 18px;
+        font-size: 14px;
+      }
+
+      .footer-note {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="notepad-container">
+    <!-- header -->
+    <div class="header">
+      <h1>
+        📋 Pro Notepad
+        <span>v2.0</span>
+      </h1>
+      <div class="toolbar">
+        <button class="btn" id="newNoteBtn" title="Yangi fayl (Ctrl+N)">
+          <i>✨</i> Yangi
+        </button>
+        <button class="btn" id="saveBtn" title="Saqlash (Ctrl+S)">
+          <i>💾</i> Saqlash
+        </button>
+        <button class="btn btn-primary" id="copyBtn" title="Nusxalash">
+          <i>📋</i> Copy
+        </button>
+        <button class="btn btn-danger" id="clearBtn" title="Tozalash (Esc)">
+          <i>🗑️</i> Tozalash
+        </button>
+      </div>
+    </div>
+
+    <!-- editor area -->
+    <div class="editor-wrapper">
+      <textarea id="notepadArea" placeholder="Matn kiriting...  ✍️&#10;&#10;•  Har bir satr yangi imkoniyat&#10;•  Ctrl+S orqali saqlang&#10;•  Tozalash uchun Esc bosing" spellcheck="false" autofocus></textarea>
+    </div>
+
+    <!-- footer with char count & status -->
+    <div class="footer-note">
+      <div id="charCountDisplay">
+        <span class="status-dot"></span>
+        <span id="charCount">0</span> belgi · <span id="wordCount">0</span> so'z
+      </div>
+      <div>⚡ Tezkor · Professional · Minimal</div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // DOM elements
+      const textarea = document.getElementById('notepadArea');
+      const charCountSpan = document.getElementById('charCount');
+      const wordCountSpan = document.getElementById('wordCount');
+      const newNoteBtn = document.getElementById('newNoteBtn');
+      const saveBtn = document.getElementById('saveBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const clearBtn = document.getElementById('clearBtn');
+
+      // ---------- HELPER: update counters ----------
+      function updateStats() {
+        const text = textarea.value;
+        const charCount = text.length;
+        // so'zlar soni: bo'sh joy va yangi qator bo'yicha ajratamiz
+        const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        charCountSpan.textContent = charCount;
+        wordCountSpan.textContent = words;
+      }
+
+      // ---------- TEXTAREA EVENTS ----------
+      textarea.addEventListener('input', updateStats);
+
+      // ---------- CLEAR (tozalash) ----------
+      clearBtn.addEventListener('click', function() {
+        if (textarea.value.trim() === '') return; // allaqachon bo'sh
+        if (confirm('Matn butunlay o‘chiriladi. Davom etasizmi?')) {
+          textarea.value = '';
+          updateStats();
+          textarea.focus();
+        }
+      });
+
+      // ---------- NEW NOTE (yangi) ----------
+      newNoteBtn.addEventListener('click', function() {
+        if (textarea.value.trim() !== '') {
+          if (!confirm('Joriy matn o‘chiriladi. Yangi fayl yaratilsinmi?')) return;
+        }
+        textarea.value = '';
+        updateStats();
+        textarea.focus();
+      });
+
+      // ---------- COPY (nusxalash) ----------
+      copyBtn.addEventListener('click', async function() {
+        const text = textarea.value;
+        if (!text) {
+          alert('Nusxalash uchun matn yo‘q.');
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          // visual feedback
+          const originalText = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<i>✅</i> Nusxalandi!';
+          copyBtn.style.background = 'linear-gradient(135deg, #2e7d5e, #1f5f46)';
+          copyBtn.style.borderColor = '#5fbf8f';
+          setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+            copyBtn.style.background = '';
+            copyBtn.style.borderColor = '';
+          }, 1500);
+        } catch (err) {
+          alert('Nusxalashda xatolik: ' + err);
+        }
+      });
+
+      // ---------- SAVE (saqlash) .txt fayl sifatida ----------
+      saveBtn.addEventListener('click', function() {
+        const text = textarea.value;
+        if (!text.trim()) {
+          alert('Saqlash uchun matn kiriting.');
+          return;
+        }
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        // fayl nomi: sana + vaqt
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 19).replace(/[:T]/g, '-');
+        a.download = `notepad-${dateStr}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        // feedback
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<i>✅</i> Saqlandi!';
+        saveBtn.style.background = 'linear-gradient(135deg, #2e7d5e, #1f5f46)';
+        saveBtn.style.borderColor = '#5fbf8f';
+        setTimeout(() => {
+          saveBtn.innerHTML = originalText;
+          saveBtn.style.background = '';
+          saveBtn.style.borderColor = '';
+        }, 1500);
+      });
+
+      // ---------- KEYBOARD SHORTCUTS ----------
+      textarea.addEventListener('keydown', function(e) {
+        // Ctrl+S yoki Cmd+S — saqlash
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          saveBtn.click();
+        }
+        // Ctrl+N yoki Cmd+N — yangi
+        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+          e.preventDefault();
+          newNoteBtn.click();
+        }
+        // Esc — tozalash (agar matn bo'lsa)
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          clearBtn.click();
+        }
+      });
+
+      // Also allow shortcuts from anywhere in document (when textarea is focused it's handled)
+      document.addEventListener('keydown', function(e) {
+        // Ctrl+Shift+S yoki Cmd+Shift+S — copy? (optional, but let's keep copy via button)
+        // We only handle if the target is not textarea (to avoid double)
+        if (e.target === textarea) return;
+
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          saveBtn.click();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+          e.preventDefault();
+          newNoteBtn.click();
+        }
+        if (e.key === 'Escape') {
+          // if not focused on textarea, still clear (but with confirmation)
+          e.preventDefault();
+          clearBtn.click();
+        }
+      });
+
+      // ---------- INITIAL STATS ----------
+      updateStats();
+
+      // ---------- OPTIONAL: initial focus with a tiny delay ----------
+      window.addEventListener('load', () => {
+        textarea.focus();
+      });
+
+      // ---------- CHAR/WORD COUNT DISPLAY: reset if empty after clear ----------
+      // already handled by updateStats
+    })();
+  </script>
+</body>
+</html>
